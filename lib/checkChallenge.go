@@ -22,7 +22,6 @@ func IsChallenge(ctx context.Context, request events.APIGatewayProxyRequest) (ev
 
 	// Check if it is a verification request
 	if event.Type == "url_verification" {
-		SendMsg("url_verification")
 		// Extract CHALLENGE parameters
 		var verificationEvent struct {
 			Challenge string `json:"challenge"`
@@ -50,7 +49,8 @@ func IsChallenge(ctx context.Context, request events.APIGatewayProxyRequest) (ev
 			Headers:    map[string]string{"Content-Type": "application/json"},
 			Body:       string(responseJSON),
 		}
-
+		
+		SendMsg("url_verification Succeed challenge: " + verificationEvent.Challenge)
 		// return response
 		return response, true, nil
 	}
