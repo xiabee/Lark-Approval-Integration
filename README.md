@@ -37,3 +37,4 @@ Integration of Lark (AKA Feishu) approval and AWS Lambda
 ## Refer
 
 * https://github.com/larksuite/oapi-sdk-go/tree/v3_main
+* SSO 授权程序：https://github.com/xiabee/AWS_SSO_Authorization
