@@ -13,17 +13,33 @@ import (
 	"time"
 )
 
-var approvalCode = os.Getenv("APPROVAL_CODE")
-
 func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	var appID = os.Getenv("APP_ID")
 	var appSecret = os.Getenv("APP_SECRET")
+	var approvalCode = os.Getenv("APPROVAL_CODE")
 
 	var client = lark.NewClient(appID, appSecret,
 		lark.WithLogLevel(larkcore.LogLevelDebug),
 		lark.WithReqTimeout(3*time.Second),
 		lark.WithEnableTokenCache(true),
 		lark.WithHttpClient(http.DefaultClient))
+
+	RES, FLAG, err := lib.IsChallenge(ctx, request)
+	if err != nil {
+		return events.APIGatewayProxyResponse{StatusCode: 400}, nil
+	}
+
+	// validation request
+	if FLAG {
+		go func() {
+			//  Perform an approval subscription by the way
+			err := larkAPI.Subscribe(appID, appSecret, approvalCode, client)
+			if err != nil {
+				panic(err)
+			}
+		}()
+		return RES, nil
+	}
 
 	instanceID, err := larkAPI.GetInstanceID(request.Body)
 	if err != nil {
@@ -40,7 +56,7 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 400}, nil
 	}
-	
+
 	lib.SendMsg(sta + ": " + form)
 
 	// return success
