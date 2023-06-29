@@ -10,6 +10,7 @@ import (
 	"main/lib"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -30,23 +31,17 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 		return events.APIGatewayProxyResponse{StatusCode: 400}, nil
 	}
 
-	detail, err := larkAPI.GetInstanceDetails(appID, appSecret, instanceID, client)
-	lib.SendMsg(detail)
-	// 返回成功响应
+	instanceDetail, err := larkAPI.GetInstanceDetails(appID, appSecret, instanceID, client)
+	if err != nil {
+		return events.APIGatewayProxyResponse{StatusCode: 400}, nil
+	}
+
+	lib.SendMsg(strconv.Itoa(instanceDetail.StatusCode) + instanceDetail.Msg)
+
+	// return success
 	return events.APIGatewayProxyResponse{StatusCode: 200}, nil
 }
 
 func main() {
 	lambda.Start(Handler)
-	//var client = lark.NewClient(appID, appSecret,
-	//	lark.WithLogLevel(larkcore.LogLevelDebug),
-	//	lark.WithReqTimeout(3*time.Second),
-	//	lark.WithEnableTokenCache(true),
-	//	lark.WithHttpClient(http.DefaultClient))
-	//
-	//err := larkAPI.Subscribe(appID, appSecret, approvalCode, client)
-	//if err != nil {
-	//	log.Println(err)
-	//}
-
 }
