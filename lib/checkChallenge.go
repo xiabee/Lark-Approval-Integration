@@ -50,7 +50,7 @@ func IsChallenge(ctx context.Context, request events.APIGatewayProxyRequest) (ev
 			Body:       string(responseJSON),
 		}
 
-		SendMsg("url_verification succeed! challenge: " + verificationEvent.Challenge)
+		SendMsg("Url_verification challenge: " + verificationEvent.Challenge)
 		// return response
 		return response, true, nil
 	}
