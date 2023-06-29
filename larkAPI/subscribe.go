@@ -31,7 +31,6 @@ func Subscribe(appID string, appSecret string, approvalCode string, client *lark
 	}
 
 	// business Handling
-	log.Println()
-	lib.SendMsg(larkcore.Prettify(resp))
+	lib.SendMsg(string(resp.RawBody))
 	return nil
 }
