@@ -1,0 +1,7 @@
+.gitignore
+.idea*
+.vscode*
+main
+*.zip
+*.txt
+Lark-Approval-Integration
