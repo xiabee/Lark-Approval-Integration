@@ -12,28 +12,25 @@ func GetInstanceID(approvalCode string, client *lark.Client) (string, error) {
 
 	//client := lark.NewClient("appID", "appSecret", lark.WithEnableTokenCache(false))
 
-	// 创建请求对象
-	req := larkapproval.NewListInstanceReqBuilder().
-		PageSize(100).
-		ApprovalCode(approvalCode).
+	// create request object
+	req := larkapproval.NewListInstanceReqBuilder().PageSize(100).ApprovalCode(approvalCode).
 		StartTime(`1088038907281`).
 		EndTime(`1988038927281`).
 		Build()
 
 	resp, err := client.Approval.Instance.List(context.Background(), req, larkcore.WithTenantAccessToken("t-g1046tkNGT3ZDRP7YAEZVFCLRUP3SDGG6QF2SSZS"))
 
-	// 处理错误
 	if err != nil {
 		return "", err
 	}
 
-	// 服务端错误处理
+	// Server Error Handling
 	if !resp.Success() {
 		fmt.Println(resp.Code, resp.Msg, resp.RequestId())
 		return "", nil
 	}
 
-	// 业务处理
+	// business processing
 	fmt.Println(larkcore.Prettify(resp))
 	return "", nil
 }
