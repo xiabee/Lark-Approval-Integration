@@ -10,23 +10,23 @@ import (
 	"strconv"
 )
 
-// GetInstanceDetails : Return a GetInstanceResp object for subsequent processing
-func GetInstanceDetails(appID string, appSecret string, instanceID string, client *lark.Client) (*larkapproval.GetInstanceResp, error) {
+// GetInstanceDetails : Return a string for subsequent processing
+func GetInstanceDetails(appID string, appSecret string, instanceID string, client *lark.Client) (string, error) {
 
 	req := larkapproval.NewGetInstanceReqBuilder().InstanceId(instanceID).Build()
 	token, err := getTenantAccessToken(appID, appSecret)
 	resp, err := client.Approval.Instance.Get(context.Background(), req, larkcore.WithTenantAccessToken(token))
 
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// Server error handling
 	if !resp.Success() {
 		fmt.Println(resp.Code, resp.Msg, resp.RequestId())
 		err = errors.New(strconv.Itoa(resp.Code) + " " + resp.Msg + " " + resp.RequestId())
-		return nil, err
+		return "", err
 	}
 
-	return resp, nil
+	return string(resp.RawBody), nil
 }

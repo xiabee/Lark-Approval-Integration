@@ -10,7 +10,6 @@ import (
 	"main/lib"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -36,7 +35,13 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 		return events.APIGatewayProxyResponse{StatusCode: 400}, nil
 	}
 
-	lib.SendMsg(strconv.Itoa(instanceDetail.StatusCode) + instanceDetail.Msg)
+	sta, err := lib.GetApprovalStatus(instanceDetail)
+	form, err := lib.GetApprovalForms(instanceDetail)
+	if err != nil {
+		return events.APIGatewayProxyResponse{StatusCode: 400}, nil
+	}
+	
+	lib.SendMsg(sta + ": " + form)
 
 	// return success
 	return events.APIGatewayProxyResponse{StatusCode: 200}, nil
