@@ -6,6 +6,7 @@ import (
 	"github.com/larksuite/oapi-sdk-go/v3/core"
 	"github.com/larksuite/oapi-sdk-go/v3/service/approval/v4"
 	"log"
+	"main/lib"
 )
 
 func Subscribe(appID string, appSecret string, approvalCode string, client *lark.Client) error {
@@ -30,6 +31,7 @@ func Subscribe(appID string, appSecret string, approvalCode string, client *lark
 	}
 
 	// business Handling
-	log.Println(larkcore.Prettify(resp))
+	log.Println()
+	lib.SendMsg(larkcore.Prettify(resp))
 	return nil
 }
