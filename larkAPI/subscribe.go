@@ -7,7 +7,6 @@ import (
 	"github.com/larksuite/oapi-sdk-go/v3/service/approval/v4"
 	"log"
 	"main/lib"
-	"strconv"
 )
 
 func Subscribe(appID string, appSecret string, approvalCode string, client *lark.Client) error {
@@ -25,14 +24,12 @@ func Subscribe(appID string, appSecret string, approvalCode string, client *lark
 		return err
 	}
 
-	lib.SendMsg(string(resp.RawBody))
+	lib.SendMsg("Subscribe: " + string(resp.RawBody))
 
 	// Server Error Handling
 	if !resp.Success() {
 		log.Println(resp.Code, resp.Msg, resp.RequestId())
-		lib.SendMsg(strconv.Itoa(resp.Code) + " " + resp.Msg + "" + resp.RequestId())
 		return err
 	}
-	lib.SendMsg(string(resp.RawBody))
 	return nil
 }
