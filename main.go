@@ -31,13 +31,11 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 
 	// validation request
 	if FLAG {
-		go func() {
-			//  Perform an approval subscription by the way
-			err := larkAPI.Subscribe(appID, appSecret, approvalCode, client)
-			if err != nil {
-				panic(err)
-			}
-		}()
+		// subscribe approval by the way
+		err := larkAPI.Subscribe(appID, appSecret, approvalCode, client)
+		if err != nil {
+			return events.APIGatewayProxyResponse{StatusCode: 400}, nil
+		}
 		return RES, nil
 	}
 
