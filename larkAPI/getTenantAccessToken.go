@@ -21,8 +21,8 @@ type Response struct {
 	TenantAccessToken string `json:"tenant_access_token"`
 }
 
-// GetTenantAccessToken : Refers to https://open.feishu.cn/document/server-docs/authentication-management/access-token/tenant_access_token_internal
-func GetTenantAccessToken(appID string, appSecret string) (string, error) {
+// getTenantAccessToken : Refers to https://open.feishu.cn/document/server-docs/authentication-management/access-token/tenant_access_token_internal
+func getTenantAccessToken(appID string, appSecret string) (string, error) {
 
 	apiUrl := "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
 	data := Request{

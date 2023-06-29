@@ -2,29 +2,34 @@ package larkAPI
 
 import (
 	"context"
-	"fmt"
 	"github.com/larksuite/oapi-sdk-go/v3"
 	"github.com/larksuite/oapi-sdk-go/v3/core"
 	"github.com/larksuite/oapi-sdk-go/v3/service/approval/v4"
+	"log"
 )
 
-func Subscribe(client *lark.Client, approvalCode string) {
+func Subscribe(appID string, appSecret string, approvalCode string, client *lark.Client) error {
 
+	token, err := getTenantAccessToken(appID, appSecret)
+	if err != nil {
+		return err
+	}
+
+	//client := lark.NewClient(appID, appSecret, lark.WithEnableTokenCache(false))
 	req := larkapproval.NewSubscribeApprovalReqBuilder().ApprovalCode(approvalCode).Build()
-
-	resp, err := client.Approval.Approval.Subscribe(context.Background(), req, larkcore.WithTenantAccessToken("t-g1046tkNGT3ZDRP7YAEZVFCLRUP3SDGG6QF2SSZS"))
+	resp, err := client.Approval.Approval.Subscribe(context.Background(), req, larkcore.WithTenantAccessToken(token))
 
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
-	// 服务端错误处理
+	// Server Error Handling
 	if !resp.Success() {
-		fmt.Println(resp.Code, resp.Msg, resp.RequestId())
-		return
+		log.Println(resp.Code, resp.Msg, resp.RequestId())
+		return err
 	}
 
-	// 业务处理
-	fmt.Println(larkcore.Prettify(resp))
+	// business Handling
+	log.Println(larkcore.Prettify(resp))
+	return nil
 }
