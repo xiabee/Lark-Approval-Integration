@@ -33,7 +33,7 @@ func SendMsg(msg string) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode == http.StatusOK {
 		log.Println("Message sent successfully")
 	} else {
 		log.Println("Failed to send message. Status:", resp.StatusCode)

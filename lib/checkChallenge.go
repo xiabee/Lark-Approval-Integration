@@ -27,7 +27,7 @@ func IsChallenge(ctx context.Context, request events.APIGatewayProxyRequest) (ev
 			Challenge string `json:"challenge"`
 		}
 		if err := json.Unmarshal([]byte(request.Body), &verificationEvent); err != nil {
-			return events.APIGatewayProxyResponse{StatusCode: 400}, true, nil
+			return events.APIGatewayProxyResponse{StatusCode: 400}, false, nil
 		}
 
 		// Build the response object
@@ -54,5 +54,5 @@ func IsChallenge(ctx context.Context, request events.APIGatewayProxyRequest) (ev
 		// return response
 		return response, true, nil
 	}
-	return events.APIGatewayProxyResponse{StatusCode: 200}, true, nil
+	return events.APIGatewayProxyResponse{StatusCode: 200}, false, nil
 }

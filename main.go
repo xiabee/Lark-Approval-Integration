@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	lark "github.com/larksuite/oapi-sdk-go/v3"
@@ -25,6 +26,19 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 		lark.WithEnableTokenCache(true),
 		lark.WithHttpClient(http.DefaultClient))
 
+	type FeishuEvent struct {
+		Type    string          `json:"type"`
+		Event   json.RawMessage `json:"event"`
+		Token   string          `json:"token"`
+		Encrypt bool            `json:"encrypt"`
+	}
+
+	var event FeishuEvent
+	if err := json.Unmarshal([]byte(request.Body), &event); err != nil {
+		return events.APIGatewayProxyResponse{StatusCode: 400}, nil
+	}
+	log.Println("event.Type: " + event.Type)
+
 	RES, FLAG, err := lib.IsChallenge(ctx, request)
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 400}, nil
@@ -40,6 +54,7 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 		return RES, nil
 	}
 
+	// if is not the validation request
 	instanceID, err := larkAPI.GetInstanceID(request.Body)
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 400}, nil
