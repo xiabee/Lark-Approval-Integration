@@ -3,7 +3,7 @@ package lib
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 	"os"
 )
@@ -22,20 +22,20 @@ func SendMsg(msg string) {
 
 	payload, err := json.Marshal(message)
 	if err != nil {
-		fmt.Println("Failed to serialize message:", err)
+		log.Println("Failed to serialize message:", err)
 		return
 	}
 
 	resp, err := http.Post(webhookURL, "application/json", bytes.NewBuffer(payload))
 	if err != nil {
-		fmt.Println("Failed to send message:", err)
+		log.Println("Failed to send message:", err)
 		return
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode == http.StatusOK {
-		fmt.Println("Message sent successfully")
+	if resp.StatusCode != http.StatusOK {
+		log.Println("Message sent successfully")
 	} else {
-		fmt.Println("Failed to send message. Status:", resp.StatusCode)
+		log.Println("Failed to send message. Status:", resp.StatusCode)
 	}
 }

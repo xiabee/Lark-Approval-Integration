@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	lark "github.com/larksuite/oapi-sdk-go/v3"
 	larkcore "github.com/larksuite/oapi-sdk-go/v3/core"
+	"log"
 	"main/larkAPI"
 	"main/lib"
 	"net/http"
@@ -45,6 +46,8 @@ func Handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 	}
 
 	instanceDetail, err := larkAPI.GetInstanceDetails(appID, appSecret, instanceID, client)
+	log.Println(instanceDetail)
+
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 400}, nil
 	}
